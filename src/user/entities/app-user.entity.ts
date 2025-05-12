@@ -1,63 +1,35 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-  OneToOne,
-} from 'typeorm';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { UserDocument } from './user-document.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, JoinColumn, OneToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ContactInfo } from './contact-info.entity';
+import { UserDocument } from './user-document.entity';
 
 @ObjectType()
-@Entity('AppUser_TB')
+@Entity()
 export class AppUser {
-  @Field(() => ID)
+  @Field()
   @PrimaryGeneratedColumn()
   id: number;
 
   @Field()
-  @Column({ length: 20 })
+  @Column()
+  firstName: string;
+
+  @Field()
+  @Column()
   lastName: string;
 
-  @Field()
-  @Column({ length: 20 })]
-  name: string;
-
-  @Field()
-  @Column()
-  isMilitar: boolean;
-
-  @Field()
-  @Column({ type: 'timestamp' })
-  timeCreate: Date;
-
-  @Field()
-  @Column()
-  isTemporal: boolean;
-
-  @Field()
-  @Column({ unique: true })
-  username: string;
-
-  @Column()
-  password: string;
-
-  @Field()
-  @Column({ unique: true })
-  email: string;
-
-  @Field()
-  @Column({ default: false })
-  emailVerified: boolean;
-
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  verificationToken: string;
-
-  @OneToMany(() => UserDocument, (userDocument) => userDocument.user)
-  documents: UserDocument[];
-
-  @OneToOne(() => ContactInfo, (contactInfo) => contactInfo.user)
+  @Field(() => ContactInfo)
+  @OneToOne(() => ContactInfo, contactInfo => contactInfo.user, {
+    cascade: true,
+    eager: true
+  })
+  @JoinColumn()
   contactInfo: ContactInfo;
+
+  @Field(() => [UserDocument], { nullable: true })
+  @OneToMany(() => UserDocument, userDocument => userDocument.user, {
+    cascade: true,
+    eager: true
+  })
+  documents: UserDocument[];
 }

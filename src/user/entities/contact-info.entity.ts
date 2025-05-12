@@ -1,51 +1,26 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { AppUser } from './app-user.entity';
-import { Country } from './country.entity';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-@Entity('ContactInfo_TB')
+@Entity()
 export class ContactInfo {
-  @Field(() => ID)
+  @Field()
   @PrimaryGeneratedColumn()
   id: number;
 
   @Field()
-  @Column({ length: 60 })
+  @Column()
   address: string;
 
   @Field()
-  @Column({ length: 50 })
-  city: string;
-
-  @Field()
-  @Column({ length: 20 })
+  @Column()
   phone: string;
 
   @Field()
-  @Column({ length: 20 })
-  celPhone: string;
+  @Column()
+  email: string;
 
-  @Field()
-  @Column({ length: 100 })
-  emergencyName: string;
-
-  @Field()
-  @Column({ length: 20 })
-  emergencyPhone: string;
-
-  @OneToOne(() => AppUser, (user) => user.contactInfo)
-  @JoinColumn({ name: 'UserID' })
+  @OneToOne(() => AppUser, user => user.contactInfo)
   user: AppUser;
-
-  @ManyToOne(() => Country, (country) => country.contactInfos)
-  @JoinColumn({ name: 'CountryID' })
-  country: Country;
 }
