@@ -6,8 +6,8 @@ import { ContactInfo } from './contact-info.entity';
 @Entity('Country_TB')
 export class Country {
   @Field(() => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Field()
   @Column({ length: 100 })

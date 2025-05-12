@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { AppUser } from './entities/app-user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 
-@Resolver()
+@Resolver(() => AppUser)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
@@ -13,8 +13,10 @@ export class UserResolver {
   }
 
   @Mutation(() => AppUser)
-  createUser(@Args('createUserInput') createUserDto: CreateUserDto) {
-    console.log('createUserDto', createUserDto)
-    return this.userService.create(createUserDto);
+  async createUser(
+    @Args('createUserInput') createUserDto: CreateUserDto,
+  ): Promise<AppUser> {
+    const user = await this.userService.create(createUserDto);
+    return user;
   }
 }
