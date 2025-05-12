@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, ID } from '@nestjs/graphql';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { AppUser } from './app-user.entity';
 import { Country } from './country.entity';
@@ -6,9 +6,9 @@ import { Country } from './country.entity';
 @ObjectType()
 @Entity()
 export class ContactInfo {
-  @Field()
-  @PrimaryGeneratedColumn()
-  id: number;
+  @Field(() => ID)
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Field()
   @Column()

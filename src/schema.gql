@@ -9,7 +9,7 @@ type Country {
 }
 
 type ContactInfo {
-  id: Float!
+  id: ID!
   address: String!
   phone: String!
   email: String!
@@ -29,7 +29,7 @@ type UserDocument {
 }
 
 type AppUser {
-  id: Float!
+  id: ID!
   name: String!
   lastName: String!
   isMilitar: Boolean!

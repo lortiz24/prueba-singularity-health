@@ -7,7 +7,7 @@ import {
   IsString,
   Length,
   ValidateNested,
-  IsNumber,
+  IsUUID,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -28,9 +28,9 @@ class ContactInfoInput {
   email: string;
 
   @Field(() => ID)
-  @IsNumber()
+  @IsUUID()
   @IsNotEmpty()
-  countryId: number;
+  countryId: string;
 }
 
 @InputType()
@@ -41,9 +41,9 @@ class UserDocumentInput {
   documentNumber: string;
 
   @Field(() => ID)
-  @IsNumber()
+  @IsUUID()
   @IsNotEmpty()
-  typeDocumentId: number;
+  typeDocumentId: string;
 }
 
 @InputType()

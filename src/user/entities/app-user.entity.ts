@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, ID } from '@nestjs/graphql';
 import {
   Column,
   Entity,
@@ -14,9 +14,9 @@ import { UserDocument } from './user-document.entity';
 @ObjectType()
 @Entity()
 export class AppUser {
-  @Field()
-  @PrimaryGeneratedColumn()
-  id: number;
+  @Field(() => ID)
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Field()
   @Column({ length: 20 })

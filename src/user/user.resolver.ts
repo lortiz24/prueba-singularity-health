@@ -14,6 +14,7 @@ export class UserResolver {
 
   @Mutation(() => AppUser)
   createUser(@Args('createUserInput') createUserDto: CreateUserDto) {
+    console.log('createUserDto', createUserDto)
     return this.userService.create(createUserDto);
   }
 }

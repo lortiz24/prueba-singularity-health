@@ -6,8 +6,8 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 @Entity('TypeDocument_TB')
 export class TypeDocument {
   @Field(() => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Field()
   @Column({ length: 50 })
