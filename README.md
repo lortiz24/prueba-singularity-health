@@ -18,6 +18,9 @@ Para mejorar la seguridad de los usuarios, se implementó:
 - Bcrypt para el hash de contraseñas:
   - Genera un salt único para cada contraseña
   - Las contraseñas nunca se almacenan en texto plano
+  
+### Datos Iniciales (Seeds)
+Para facilitar el uso inicial de la aplicación, implementé seeds (semillas de datos) que pueblan automáticamente las tablas de países y tipos de documentos en la base de datos.
 
 ### Manejo de Datos Transacciones
 Implementé transacciones en las operaciones críticas, especialmente en la creación de usuarios:
