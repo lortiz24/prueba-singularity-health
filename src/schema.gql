@@ -25,7 +25,6 @@ type UserDocument {
   id: ID!
   documentNumber: String!
   typeDocument: TypeDocument!
-  user: AppUser!
 }
 
 type AppUser {
@@ -40,7 +39,7 @@ type AppUser {
   emailVerified: Boolean!
   verificationToken: String
   contactInfo: ContactInfo!
-  documents: [UserDocument!]
+  document: UserDocument
 }
 
 """
@@ -65,7 +64,7 @@ input CreateUserDto {
   password: String!
   email: String!
   contactInfo: ContactInfoInput!
-  documents: [UserDocumentInput!]!
+  document: UserDocumentInput!
 }
 
 input ContactInfoInput {

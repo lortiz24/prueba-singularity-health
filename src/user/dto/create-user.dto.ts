@@ -3,7 +3,6 @@ import {
   IsBoolean,
   IsEmail,
   IsNotEmpty,
-  IsOptional,
   IsString,
   Length,
   ValidateNested,
@@ -85,9 +84,8 @@ export class CreateUserDto {
   @Type(() => ContactInfoInput)
   contactInfo: ContactInfoInput;
 
-  @Field(() => [UserDocumentInput])
-  @ValidateNested({ each: true })
+  @Field(() => UserDocumentInput)
+  @ValidateNested()
   @Type(() => UserDocumentInput)
-  @IsOptional()
-  documents?: UserDocumentInput[];
+  document: UserDocumentInput;
 }

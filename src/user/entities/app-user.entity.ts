@@ -4,9 +4,9 @@ import {
   Entity,
   JoinColumn,
   OneToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   CreateDateColumn,
+  ManyToOne,
 } from 'typeorm';
 import { ContactInfo } from './contact-info.entity';
 import { UserDocument } from './user-document.entity';
@@ -65,10 +65,10 @@ export class AppUser {
   @JoinColumn()
   contactInfo: ContactInfo;
 
-  @Field(() => [UserDocument], { nullable: true })
-  @OneToMany(() => UserDocument, (userDocument) => userDocument.user, {
+  @Field(() => UserDocument, { nullable: true })
+  @ManyToOne(() => UserDocument, (userDocument) => userDocument.users, {
     cascade: true,
     eager: true,
   })
-  documents: UserDocument[];
+  document: UserDocument;
 }

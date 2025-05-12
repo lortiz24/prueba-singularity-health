@@ -1,24 +1,31 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
+import { Field, ObjectType, ID } from '@nestjs/graphql';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { AppUser } from './app-user.entity';
 import { TypeDocument } from './type-document.entity';
 
 @ObjectType()
-@Entity('UserDocument_TB')
+@Entity()
 export class UserDocument {
   @Field(() => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Field()
   @Column()
   documentNumber: string;
 
   @Field(() => TypeDocument)
-  @ManyToOne(() => TypeDocument, typeDocument => typeDocument.userDocuments)
+  @ManyToOne(() => TypeDocument, (typeDocument) => typeDocument.userDocuments, {
+    eager: true,
+  })
   typeDocument: TypeDocument;
 
-  @Field(() => AppUser)
-  @ManyToOne(() => AppUser, user => user.documents)
-  user: AppUser;
+  @OneToMany(() => AppUser, (user) => user.document)
+  users: AppUser[];
 }
