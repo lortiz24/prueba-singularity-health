@@ -10,6 +10,7 @@ import { AppUser } from './entities/app-user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ContactInfo } from './entities/contact-info.entity';
 import { handleDatabaseError } from '../common/helpers/database-error.helper';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -44,69 +45,75 @@ export class UserService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
-    const existingUser = await queryRunner.manager.findOne(AppUser, {
-      where: [
-        { email: createUserDto.email },
-        { username: createUserDto.username },
-      ],
-    });
-
-    if (existingUser) {
-      if (existingUser.email === createUserDto.email) {
-        throw new HttpException(
-          'Ya existe un usuario con este email',
-          HttpStatus.CONFLICT,
-        );
-      }
-      if (existingUser.username === createUserDto.username) {
-        throw new HttpException(
-          'Ya existe un usuario con este nombre de usuario',
-          HttpStatus.CONFLICT,
-        );
-      }
-    }
-
-    const country = await queryRunner.manager.findOne('Country_TB', {
-      where: { id: createUserDto.contactInfo.countryId },
-    });
-
-    const contactInfo = this.contactInfoRepository.create({
-      ...createUserDto.contactInfo,
-      country,
-    });
-
-    const savedContactInfo = await queryRunner.manager.save(contactInfo);
-
-    let userDocument;
-    const typeDocument = await queryRunner.manager.findOne('TypeDocument_TB', {
-      where: { id: createUserDto.document.typeDocumentId },
-    });
-
-    if (!typeDocument) {
-      throw new NotFoundException('Tipo de documento no encontrado');
-    }
-
-    //toDo: Es posible agregar una valicacon adicional para evitar que haya usuarios con un mismo documento.
-
-    userDocument = await queryRunner.manager.create('UserDocument', {
-      documentNumber: createUserDto.document.documentNumber,
-      typeDocument,
-    });
-    userDocument = await queryRunner.manager.save(userDocument);
-
-    const user = this.userRepository.create({
-      name: createUserDto.name,
-      lastName: createUserDto.lastName,
-      email: createUserDto.email,
-      emailVerified: false,
-      password: createUserDto.password,
-      username: createUserDto.username,
-      isMilitar: createUserDto.isMilitar,
-      isTemporal: createUserDto.isTemporal,
-      contactInfo: savedContactInfo,
-      document: userDocument,
-    });
     try {
+      const existingUser = await queryRunner.manager.findOne(AppUser, {
+        where: [
+          { email: createUserDto.email },
+          { username: createUserDto.username },
+        ],
+      });
+
+      if (existingUser) {
+        if (existingUser.email === createUserDto.email) {
+          throw new HttpException(
+            'Ya existe un usuario con este email',
+            HttpStatus.CONFLICT,
+          );
+        }
+        if (existingUser.username === createUserDto.username) {
+          throw new HttpException(
+            'Ya existe un usuario con este nombre de usuario',
+            HttpStatus.CONFLICT,
+          );
+        }
+      }
+
+      const country = await queryRunner.manager.findOne('Country_TB', {
+        where: { id: createUserDto.contactInfo.countryId },
+      });
+
+      const contactInfo = this.contactInfoRepository.create({
+        ...createUserDto.contactInfo,
+        country,
+      });
+
+      const savedContactInfo = await queryRunner.manager.save(contactInfo);
+
+      let userDocument;
+      const typeDocument = await queryRunner.manager.findOne(
+        'TypeDocument_TB',
+        {
+          where: { id: createUserDto.document.typeDocumentId },
+        },
+      );
+
+      if (!typeDocument) {
+        throw new NotFoundException('Tipo de documento no encontrado');
+      }
+
+      //toDo: Es posible agregar una valicacon adicional para evitar que haya usuarios con un mismo documento.
+
+      userDocument = await queryRunner.manager.create('UserDocument', {
+        documentNumber: createUserDto.document.documentNumber,
+        typeDocument,
+      });
+      userDocument = await queryRunner.manager.save(userDocument);
+
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
+
+      const user = this.userRepository.create({
+        name: createUserDto.name,
+        lastName: createUserDto.lastName,
+        email: createUserDto.email,
+        emailVerified: false,
+        password: hashedPassword,
+        username: createUserDto.username,
+        isMilitar: createUserDto.isMilitar,
+        isTemporal: createUserDto.isTemporal,
+        contactInfo: savedContactInfo,
+        document: userDocument,
+      });
       const savedUser = await queryRunner.manager.save(user);
       await queryRunner.commitTransaction();
       return savedUser;
