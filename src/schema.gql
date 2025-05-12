@@ -2,6 +2,80 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Country {
+  id: ID!
+  name: String!
+  code: String!
+}
+
+type ContactInfo {
+  id: Float!
+  address: String!
+  phone: String!
+  email: String!
+  country: Country!
+}
+
+type TypeDocument {
+  id: ID!
+  nameTypeDocument: String!
+}
+
+type UserDocument {
+  id: ID!
+  documentNumber: String!
+  typeDocument: TypeDocument!
+  user: AppUser!
+}
+
+type AppUser {
+  id: Float!
+  name: String!
+  lastName: String!
+  isMilitar: Boolean!
+  timeCreate: DateTime!
+  isTemporal: Boolean!
+  username: String!
+  email: String!
+  emailVerified: Boolean!
+  verificationToken: String
+  contactInfo: ContactInfo!
+  documents: [UserDocument!]
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
   getUser: String!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserDto!): AppUser!
+}
+
+input CreateUserDto {
+  name: String!
+  lastName: String!
+  isMilitar: Boolean!
+  isTemporal: Boolean!
+  username: String!
+  password: String!
+  email: String!
+  contactInfo: ContactInfoInput!
+  documents: [UserDocumentInput!]!
+}
+
+input ContactInfoInput {
+  address: String!
+  phone: String!
+  email: String!
+  countryId: ID!
+}
+
+input UserDocumentInput {
+  documentNumber: String!
+  typeDocumentId: ID!
 }

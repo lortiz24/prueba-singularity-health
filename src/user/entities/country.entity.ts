@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { ContactInfo } from './contact-info.entity';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { ContactInfo } from './contact-info.entity';
 
 @ObjectType()
 @Entity('Country_TB')
@@ -10,13 +10,13 @@ export class Country {
   id: number;
 
   @Field()
-  @Column({ length: 4 })
-  countryCode: string;
+  @Column({ length: 100 })
+  name: string;
 
   @Field()
-  @Column({ length: 100 })
-  countryName: string;
+  @Column({ length: 3 })
+  code: string;
 
   @OneToMany(() => ContactInfo, contactInfo => contactInfo.country)
-  contactInfos: ContactInfo[];
+  contacts: ContactInfo[];
 }

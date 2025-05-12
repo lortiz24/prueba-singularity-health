@@ -1,10 +1,13 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, ID } from '@nestjs/graphql';
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
-  MaxLength,
+  Length,
   ValidateNested,
+  IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -13,34 +16,78 @@ class ContactInfoInput {
   @Field()
   @IsString()
   @IsNotEmpty()
-  @MaxLength(20)
   address: string;
 
   @Field()
   @IsString()
   @IsNotEmpty()
-  @MaxLength(20)
   phone: string;
 
   @Field()
   @IsEmail()
   email: string;
+
+  @Field(() => ID)
+  @IsNumber()
+  @IsNotEmpty()
+  countryId: number;
+}
+
+@InputType()
+class UserDocumentInput {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  documentNumber: string;
+
+  @Field(() => ID)
+  @IsNumber()
+  @IsNotEmpty()
+  typeDocumentId: number;
 }
 
 @InputType()
 export class CreateUserDto {
   @Field()
   @IsString()
-  @IsNotEmpty()
-  firstName: string;
+  @Length(1, 20)
+  name: string;
+
+  @Field()
+  @IsString()
+  @Length(1, 20)
+  lastName: string;
+
+  @Field()
+  @IsBoolean()
+  isMilitar: boolean;
+
+  @Field()
+  @IsBoolean()
+  isTemporal: boolean;
 
   @Field()
   @IsString()
   @IsNotEmpty()
-  lastName: string;
+  username: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @Field()
+  @IsEmail()
+  email: string;
 
   @Field(() => ContactInfoInput)
   @ValidateNested()
   @Type(() => ContactInfoInput)
   contactInfo: ContactInfoInput;
+
+  @Field(() => [UserDocumentInput])
+  @ValidateNested({ each: true })
+  @Type(() => UserDocumentInput)
+  @IsOptional()
+  documents?: UserDocumentInput[];
 }

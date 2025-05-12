@@ -1,6 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { AppUser } from './app-user.entity';
+import { Country } from './country.entity';
 
 @ObjectType()
 @Entity()
@@ -23,4 +24,10 @@ export class ContactInfo {
 
   @OneToOne(() => AppUser, user => user.contactInfo)
   user: AppUser;
+
+  @Field(() => Country)
+  @ManyToOne(() => Country, country => country.contacts, {
+    eager: true
+  })
+  country: Country;
 }

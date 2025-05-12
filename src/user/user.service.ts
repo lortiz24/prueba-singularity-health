@@ -21,7 +21,7 @@ export class UserService {
     await this.contactInfoRepository.save(contactInfo);
 
     const user = this.userRepository.create({
-      firstName: createUserDto.firstName,
+      name: createUserDto.name,
       lastName: createUserDto.lastName,
       contactInfo,
     });
